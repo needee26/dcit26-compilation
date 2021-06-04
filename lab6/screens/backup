@@ -1,0 +1,38 @@
+import React, {useState, useEffect} from 'react';
+import { Text, View, FlatList, StyleSheet, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
+import Constants from 'expo-constants';
+
+
+const Home = ({ navigation }) => {
+  const [data, setData] = useState([]);
+  const[isLoading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('https://randomuser.me/api')
+    .then((response) => response.json())
+    .then((json) => {
+      setData(json.randomuser);
+    })
+    .catch((error) => {
+      console.error(error);
+    })
+    .finally(() => setLoading(false));
+
+  }, []);
+
+  return(
+    <View style = {styles.container}>
+    {isLoading ? <Text>Loading....</Text> : (
+        <FlatList
+          data={data}
+          keyExtractor={({ id }, index) => id}
+          renderItem={({ item }) => (
+            <Text>{data.name}, {data.dob}, {data.gender}, {data.location}, {data.email}, {data.thumbnail}</Text>
+          )}
+        />
+    )}
+    </View>
+    );
+};
+
+export default Home;
